@@ -1,0 +1,193 @@
+<div class="combination" *ngIf="tabs[3].id == 3 && tabs[3].isActive == true">
+  <ng-container>
+      <span class="note required-field">Select the files, then join them based on common columns </span>
+      <div class="header">
+          <!-- <h5>Combinations</h5> -->
+          <h5>Files</h5>
+      </div>
+
+      <!--join form-->
+      <!-- combination -->
+      <table *ngIf="sortedCheckedList.length > 0" class="table table-striped createNewSoltionsTable">
+          <tbody>
+              <tr class="" *ngFor="let obj of sortedCheckedList; let i = index">
+                  <td><input type="checkbox" [(ngModel)]="obj.isSelected" (change)="checkedInJoin($event,obj,i)"
+                          style=" margin-right: 10px;">
+                      {{obj.showAppendName}}
+                  </td>
+              </tr>
+          </tbody>
+      </table>
+      <div *ngIf="submitted" class="error">{{submittedErrorMsg}}</div>
+
+      <button *ngIf="sortedCheckedList.length > 0" mat-button class="btnn" (click)="join2Sheets()">Join</button>
+
+
+
+      <div *ngIf="mergeCheckedList.length != 0">
+
+          <form style="border: 1px #000 solid;" [formGroup]="joinSetForm">
+              <div class="row" style="background-color: #0076A8; color: #fff; width: 100%; margin: auto;">
+                  <div class="col-md-2" style="font-weight: 600;background-color: #0076A8; color: #fff;">Join Set
+                  </div>
+                  <div class="col-md-3" style="font-weight: 600;background-color: #0076A8; color: #fff;"></div>
+                  <div class="col-md-3" style="font-weight: 600;background-color: #0076A8; color: #fff;"></div>
+                  <div class="col-md-3" style="font-weight: 600;background-color: #0076A8; color: #fff;"></div>
+                  <div class="col-md-1" style="font-weight: 600;background-color: #0076A8; color: #fff;"></div>
+              </div>
+              <div formArrayName="Merg">
+                  <div *ngFor="let merg of MergeArr().controls ;let i=index;" [formGroupName]="i">
+
+                      <div class="" style="padding: 7px;">Join Table Name : {{mergeCheckedList[i].mergeName}}
+
+                      </div>
+                      <div formArrayName="tableControl">
+                          <div class="" *ngFor="let table of TableArr(i).controls ;let j=index;"
+                              [formGroupName]="j">
+                              <div class="row">
+                                  <div class="col-md-2"></div>
+                                  <div class="col-md-3">
+                                      <mat-form-field appearance="fill">
+                                          <mat-select class="form-control" placeholder="Select Primary Table"
+                                              formControlName="table1"
+                                              (selectionChange)="selectPrimaryTable($event,j,i)">
+                                              <ng-container
+                                                  *ngFor="let data of mergeCheckedList[i]?.dropDownList[j].primaryTableList">
+                                                  <mat-option [value]="data">
+                                                      {{data.value}}
+                                                  </mat-option>
+                                              </ng-container>
+                                          </mat-select>
+                                      </mat-form-field>
+                                  </div>
+                                  <div class="col-md-2">
+                                      <mat-form-field appearance="fill">
+                                          <mat-select class="form-control" placeholder="Select Join"
+                                              formControlName="join">
+                                              <mat-option *ngFor="let value of joinType" [value]="value">
+                                                  {{value}}
+                                              </mat-option>
+                                          </mat-select>
+                                      </mat-form-field>
+                                  </div>
+                                  <div class="col-md-3">
+                                      <mat-form-field appearance="fill">
+                                          <mat-select class="form-control" placeholder="Select Foreign Table"
+                                              formControlName="table2"
+                                              (selectionChange)="selectForeignTable($event,j,i)">
+                                              <ng-container
+                                                  *ngFor="let dataa of mergeCheckedList[i]?.dropDownList[j].foreignTableList">
+                                                  <mat-option [value]="dataa">{{dataa.value}} </mat-option>
+                                              </ng-container>
+                                          </mat-select>
+                                      </mat-form-field>
+                                  </div>
+                                  <div class="col-md-2">
+                                      <button mat-button class="dds-icon dds-icon_plus__l__stroke btnn"
+                                          style="color: #fff;font-size: 14px;" (click)="addTableJoins(i)"
+                                          [disabled]="mergeCheckedList[i]?.allTablesSelected" *ngIf="j==0"
+                                          style=" line-height:14px;color: #fff;font-size: 14px;">
+                                          Table</button>
+                                      <button mat-button class="dds-icon dds-icon_delete__l__stroke btnn"
+                                          style="color: #fff;font-size: 14px;" *ngIf="j!=0"
+                                          (click)="removeTable(i,j)"
+                                          style="width: 50px; font-size:22px; line-height:14px; color: #fff;font-size: 14px;"></button>
+                                  </div>
+                              </div>
+                              <div formArrayName="column">
+                                  <div *ngFor="let item of columnArr(i,j).controls ;let k=index;"
+                                      [formGroupName]="k">
+                                      <div class="row">
+                                          <div class="col-md-2"></div>
+
+                                          <div class="col-md-3">
+                                              <mat-form-field appearance="fill">
+                                                  <mat-select class="form-control" placeholder="Select Column"
+                                                      formControlName="column1"
+                                                      (selectionChange)="selectPrimarykey($event,k)">
+                                                      <mat-option
+                                                          *ngFor="let item of mergeCheckedList[i]?.dropDownList[j]?.primaryTableList?.primaryKeyList[k]"
+                                                          [value]="item">
+                                                          {{item.columnName}}
+                                                      </mat-option>
+                                                  </mat-select>
+                                              </mat-form-field>
+                                          </div>
+                                          <div class="col-md-2"></div>
+                                          <div class="col-md-3">
+                                              <mat-form-field appearance="fill">
+                                                  <mat-select class="form-control" placeholder="Select Column"
+                                                      formControlName="column2"
+                                                      (selectionChange)="selectForeignKey($event, k)">
+                                                      <ng-container
+                                                          *ngIf="mergeCheckedList[i]?.dropDownList[j]?.foreignTableList != undefined">
+                                                          <mat-option
+                                                              *ngFor="let item of mergeCheckedList[i]?.dropDownList[j]?.foreignTableList?.foreignKeyList[k]"
+                                                              [value]="item">
+                                                              {{item.columnName}}
+                                                          </mat-option>
+                                                      </ng-container>
+                                                  </mat-select>
+                                              </mat-form-field>
+                                          </div>
+                                          <div class="col-md-2" style="border-bottom: 1px solid;">
+                                              <button mat-button class="dds-icon dds-icon_plus__l__stroke btnn"
+                                                  style="color: #fff;font-size: 14px;"
+                                                  (click)="addColumnJoin(i,j)" *ngIf="k==0"
+                                                  style="line-height:14px; color: #fff;font-size: 14px;">Column
+                                              </button>
+                                              <button mat-button class="dds-icon dds-icon_delete__l__stroke btnn"
+                                                  style="color: #fff;font-size: 14px;" *ngIf="k!=0"
+                                                  (click)="removeCol(i,j,k)"
+                                                  style="width: 50px; font-size:22px; line-height:14px; color:#fff;font-size: 14px;"></button>
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </form>
+      </div>
+
+      <div class="row">
+        <button *ngIf="mergeCheckedList.length != 0" mat-button class="btnn" style="float: left;"
+            (click)="resetMerge()">Reset</button>
+
+        <div style="text-align: right;">
+            <button mat-button class="btnn" (click)="gotoNextORPreviousTab({ id: 2})">Prev</button>
+            <button mat-button class="btnn" (click)="MergeSubmit()">Save</button>
+            <button mat-button class="btnn" (click)="gotoNextORPreviousTab({ id: 4}, 'next')">Next</button>
+        </div>
+      </div>
+
+      <div class="row">
+        <ng-container *ngIf="mergeList.length>0">
+          <div class="container text-left scroll" >
+            <div class="row">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Join Table Name</th>
+                    <th >Primary Table </th>
+                    <th >Secondary Table</th>
+                    <th >ACtions</th>
+                  </tr>
+                </thead>
+                <tbody *ngFor="let list of mergeList">
+                  <tr *ngFor="let tlist of list.templatesMergeList">
+                      <td>{{list.mergeName}}</td>
+                    <td>{{tlist.primaryTableName}}</td>
+                    <td>{{tlist.secondaryTableName}}</td>
+                    <td><span class="dds-icon dds-icon_delete">&nbsp;</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+
+  </ng-container>
+</div>

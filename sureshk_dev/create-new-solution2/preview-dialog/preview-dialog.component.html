@@ -1,0 +1,25 @@
+<div class="taxt_audit-report">
+  <div class="taxt-audit-popup preview" style="width: 1000px">
+      <div class="taxt-header">
+      </div>
+      <form>
+          <table class="table table-striped">
+              <thead>
+                  <tr>
+                      <th *ngFor="let header of _data.columnsArr">{{header}}</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <tr *ngFor="let __data of _data.selectedM_A_S; let j = index">
+                      <td *ngFor="let val of _data.columnsArr; let j = index"
+                          style="width:120px; word-break: break-all;">
+                          {{__data[val]}}</td>
+                  </tr>
+              </tbody>
+          </table>
+      </form>
+      <div class="col-sm-3" style="float: right;text-align: right;">
+          <button mat-button [mat-dialog-close]="" cdkFocusInitial style="border:1px solid #0076A8; background: none; color:#0076A8">Cancel</button>
+      </div>
+  </div>
+</div>

@@ -1,0 +1,21 @@
+<div class="taxt_audit-report">
+  <div class="taxt-audit-popup ">
+      <div class="taxt-header">
+          <h4 style="background-color: #0076A8; color: white; padding: 10px;">{{data.formName}} Name</h4>
+      </div>
+      <form [formGroup]="appendForm" (ngSubmit)="onSubmit()">
+          <div class="row popup">
+              <div class=" field">
+                  <label>Enter Name</label>
+                  <input type="text" formControlName="appendNameControl"
+                      [ngClass]="{ 'is-invalid': submited && appendForm.controls['appendNameControl'].errors }">
+              </div>
+          </div>
+
+          <div class="col-sm-12" style="float: right; text-align: right;">
+              <button mat-button type="submit" cdkFocusInitial>Add</button>
+              <button mat-button matDialogClose="cancel" style="color: #0076A8; background: #fff;">Cancel</button>
+          </div>
+      </form>
+  </div>
+</div>

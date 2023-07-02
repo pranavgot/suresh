@@ -1,0 +1,64 @@
+<div>
+  <mat-card>
+      <div class="row">
+          <div>
+              <div style="float:left ; width:100%" *ngIf="!showUploadFilesTab">
+                  <div class="but">
+                      <div>
+                          <label for="inputfile" class="button">
+                              <input type="file" id="inputfile" (change)="saveiputFiles($event)"
+                                  style="display: none;" multiple />
+                              <span class="dds-icon dds-icon_upload__l__stroke"></span>
+                              <br>
+                              <h5>Upload Files</h5>
+                              <p style="font-size: 9px;color: #707070;">Note: Exclude .JS and .EXE files</p>
+                          </label>
+                      </div>
+                  </div>
+              </div>
+
+              <div *ngIf="showUploadFilesTab">
+                  <span class="note required-field">Choose the sheets within the file(s)</span>
+                  <div class="header">
+                      <h5>Uploaded Files</h5>
+                  </div>
+                  <div class="selectCheck">
+                      <input type="checkbox" [(ngModel)]="masterSelected" name="list_name" value="m1"
+                          (change)="checkUncheckAllUploadFiles()" />
+                      <label>Select All</label>
+                  </div>
+              </div>
+
+              <table *ngFor="let item of uploadedFiles" class="createNewSoltionsTable">
+                  <thead>
+                      <tr>
+                          <th><span class="dds-icon dds-icon_file_xls__l__filled"></span>{{item.fileName}}</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <tr *ngFor="let sheet of item.totalSheetList">
+                          <td><input type="checkbox" [(ngModel)]="sheet.isSheetSelected" class="form-check-input"
+                                  (change)="isAllSelectedUploadFiles()" style="margin:0 8px 0 0">
+                              <img src="../../../../assets/images/xls_sheet.png" alt="" width="15px" height="15px"
+                                  style="margin:0 5px 0 0;"> <label>{{sheet.sheetName}}</label>
+                          </td>
+                      </tr>
+                      <tr *ngIf="item.isProgressBar">
+                          <td>
+                              <img src="../../assets/images/loading.gif" alt="" width="20px" height="20px"
+                                  style="margin-top: -4px;margin-left: 100px;">
+                          </td>
+                      </tr>
+                  </tbody>
+              </table>
+          </div>
+          <div style=" text-align: right; margin:20px 0 0 0">
+              <button *ngIf="uploadedFiles && uploadedFiles.length > 0" mat-button class="btnn"
+                  (click)="showUploadFilesTab = false;uploadedFiles = [];masterSelected = false;"
+                  style="border:1px solid #0076A8; background: #fff; color: #0076A8;">Prev</button>
+              <button *ngIf="uploadedFiles && uploadedFiles.length > 0" mat-button class="btnn" [disabled]="isUploadFilesNextBtnEnable"
+                  (click)="changeTabs({ id: 1})">Next</button>
+          </div>
+      </div>
+  </mat-card>
+</div>

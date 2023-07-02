@@ -1,0 +1,41 @@
+<ng-container>
+
+  <mat-card style="padding-bottom: 70px;">
+      <span class="note required-field">Click the view icon to see a preview of the filtered files' or sheets'
+          information.
+      </span>
+      <div class="sheet">
+          <div class="header">
+              <h5>Selected Files
+                  <span style="float: right;">Preview Data</span>
+              </h5>
+          </div>
+          <div>
+              <table *ngFor="let item of filesWithSelectedSheets;let i = index;" class="createNewSoltionsTable">
+                  <thead>
+                      <tr>
+                          <th>
+                              <span class="dds-icon dds-icon_file_xls__l__filled"></span>{{item.fileName}}
+                          </th>
+                      </tr>
+                  </thead>
+                  <tbody *ngFor="let sheet of item.totalSheetList; let j = index;">
+                      <tr *ngIf="sheet?.isSheetSelected">
+                          <td style="padding-left: 50px"><img src="../../../../assets/images/xls_sheet.png" alt=""
+                                  width="15px" height="15px" style="margin:0 5px 0 0;"><label>
+                                  {{sheet.sheetName}}</label>
+
+                              <span (click)="previewPopup(sheet, '')" class="dds-icon dds-icon_eyeopen"
+                                  style="float: right;"></span>
+                          </td>
+                      </tr>
+                  </tbody>
+              </table>
+          </div>
+          <div style="float: right; margin-top: 20px">
+              <button mat-button class="btnn" (click)="gotoPreviousTab({ id: 0})">Prev</button>
+              <button *ngIf="filesWithSelectedSheets.length > 0" mat-button class="btnn" (click)="gotoNextTab({id:2});">Next</button>
+          </div>
+      </div>
+  </mat-card>
+</ng-container>
